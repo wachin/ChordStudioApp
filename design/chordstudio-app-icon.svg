@@ -23,8 +23,8 @@
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
      inkscape:zoom="3.6141013"
-     inkscape:cx="33.479969"
-     inkscape:cy="57.967384"
+     inkscape:cx="33.756663"
+     inkscape:cy="57.967385"
      inkscape:window-width="1360"
      inkscape:window-height="718"
      inkscape:window-x="0"
@@ -163,7 +163,7 @@
        fx="43.35"
        fy="79.8"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.1187524,0,0,1.1187524,-6.4126309,-6.4126309)" />
+       gradientTransform="matrix(0.99089575,0,0,0.99089575,0.49162821,0.49162821)" />
     <radialGradient
        inkscape:collect="always"
        xlink:href="#nodeGrad"
@@ -174,11 +174,11 @@
        fx="45.65"
        fy="42.2"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.1187524,0,0,1.1187524,-6.4126309,-6.4126309)" />
+       gradientTransform="matrix(0.99089575,0,0,0.99089575,0.49162821,0.49162821)" />
   </defs>
   <g
      id="g30"
-     transform="matrix(1.1187524,0,0,1.1187524,-6.4126309,-6.4126309)">
+     transform="matrix(0.99089575,0,0,0.99089575,0.4916282,0.4916282)">
     <path
        d="m 54,8 c 18,0 34,8 41,23 6,13 5,29 -3,42 C 84,86 70,97 54,100 38,97 24,86 16,73 8,60 7,44 13,31 20,16 36,8 54,8 Z"
        fill="url(#bgGrad)"
@@ -187,7 +187,7 @@
   </g>
   <g
      id="g34"
-     transform="matrix(1.1187524,0,0,1.1187524,-6.4126309,-6.4126309)">
+     transform="matrix(0.99089575,0,0,0.99089575,0.4916282,0.4916282)">
     <path
        d="m 54,22 c 12,0 22,5 28,14 -4,-3 -9,-5 -14,-5 -10,0 -19,5 -23,14 -4,9 -2,20 5,27 7,7 18,9 27,5 C 73,85 64,90 54,90 36,90 22,74 22,56 22,38 36,22 54,22 Z"
        fill="url(#ringGrad)"
@@ -196,7 +196,7 @@
   </g>
   <g
      id="g40"
-     transform="matrix(1.1187524,0,0,1.1187524,-6.4126309,-6.4126309)">
+     transform="matrix(0.99089575,0,0,0.99089575,0.4916282,0.4916282)">
     <path
        d="m 68,37 c -3,0 -6,1 -8,2 -8,4 -14,12 -16,21 -2,8 0,15 5,20 l -6,6 C 36,79 33,68 35,58 37,46 45,35 56,29 c 4,-2 8,-3 12,-3 z"
        fill="url(#lineGrad)"
@@ -209,22 +209,22 @@
        style="fill:url(#linearGradient491)" />
   </g>
   <circle
-     cx="43.931229"
-     cy="85.325066"
-     r="6.1531382"
+     cx="45.08194"
+     cy="81.745079"
+     r="5.4499264"
      fill="url(#nodeGrad)"
      id="circle48"
-     style="fill:url(#radialGradient501);stroke-width:1.11875" />
+     style="fill:url(#radialGradient501);stroke-width:0.990894" />
   <circle
-     cx="46.168732"
-     cy="42.812477"
-     r="5.0343857"
+     cx="47.063728"
+     cy="44.091042"
+     r="4.4590306"
      fill="url(#nodeGrad)"
      id="circle50"
-     style="fill:url(#radialGradient503);stroke-width:1.11875" />
+     style="fill:url(#radialGradient503);stroke-width:0.990894" />
   <g
      id="g433"
-     transform="matrix(1.1187524,0,0,1.1187524,-7.1692533,-7.5778185)">
+     transform="matrix(0.99089575,0,0,0.99089575,-0.17852359,-0.5403959)">
     <circle
        cx="70"
        cy="33"
@@ -241,7 +241,7 @@
   </g>
   <g
      id="g443"
-     transform="matrix(1.1187524,0,0,1.1187524,-7.8765636,-4.5403053)">
+     transform="matrix(0.99089575,0,0,0.99089575,-0.80499891,2.149975)">
     <g
        id="g438">
       <circle
@@ -261,7 +261,7 @@
   </g>
   <g
      id="g520"
-     transform="matrix(1.1187524,0,0,1.1187524,-13.125145,-10.887641)">
+     transform="matrix(0.99089575,0,0,0.99089575,-5.453746,-3.4719552)">
     <circle
        cx="83"
        cy="64"
@@ -277,17 +277,17 @@
        id="circle58" />
   </g>
   <circle
-     cx="43.931229"
-     cy="85.325066"
-     r="2.237505"
+     cx="45.08194"
+     cy="81.745079"
+     r="1.9817916"
      fill="#fff7ed"
      id="circle60"
-     style="stroke-width:1.11875" />
+     style="stroke-width:0.990894" />
   <circle
-     cx="46.168732"
-     cy="42.812477"
-     r="1.9018792"
+     cx="47.063728"
+     cy="44.091042"
+     r="1.6845229"
      fill="#fff7ed"
      id="circle62"
-     style="stroke-width:1.11875" />
+     style="stroke-width:0.990894" />
 </svg>
