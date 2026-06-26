@@ -1,8 +1,15 @@
 *.iml
 .gradle
+.kotlin
 /local.properties
+/.idea/.name
+/.idea/AndroidProjectSystem.xml
+/.idea/appInsightsSettings.xml
 /.idea/caches
+/.idea/compiler.xml
+/.idea/deploymentTargetSelector.xml
 /.idea/libraries
+/.idea/migrations.xml
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
