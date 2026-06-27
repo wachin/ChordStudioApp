@@ -144,6 +144,85 @@ In practice:
 - keep the icon centered
 - keep monochrome scaling consistent with the normal icon
 
+## Final Tuning For This Project
+
+For the current state of this project, the most likely final fix is not a redesign.
+
+It only needs a very small reduction of the adaptive foreground artwork.
+
+Edit these two things:
+
+### 1. Main adaptive foreground image
+
+File:
+
+- [app/src/main/res/drawable-nodpi/ic_launcher_foreground_art.png](/home/wachin/AndroidStudioProjects/ChordStudioApp/app/src/main/res/drawable-nodpi/ic_launcher_foreground_art.png)
+
+What to do:
+
+- make the visible symbol slightly smaller
+- keep it centered on the transparent canvas
+- do not change the canvas size
+
+Practical target:
+
+- reduce the visible artwork by a very small amount, around 2% to 4%
+
+Reason:
+
+- the phone screenshot shows only a tiny remaining crop near the top-right edge
+- the composition is already acceptable
+- a small scale reduction should be enough
+
+### 2. Monochrome adaptive icon scale
+
+File:
+
+- [app/src/main/res/drawable/ic_launcher_monochrome.xml](/home/wachin/AndroidStudioProjects/ChordStudioApp/app/src/main/res/drawable/ic_launcher_monochrome.xml:1)
+
+What to edit:
+
+- the `android:scaleX` value
+- the `android:scaleY` value
+
+Current values:
+
+- `0.455`
+- `0.455`
+
+What to do:
+
+- lower both values slightly and keep them equal
+
+Practical target:
+
+- try `0.445` first
+- if needed, try `0.44`
+
+Reason:
+
+- the monochrome version should match the same safe margin as the normal icon
+
+## Smallest Safe Workflow
+
+If you want the smallest possible adjustment, do this:
+
+1. Make the foreground PNG just a little smaller.
+2. Change monochrome scale from `0.455` to `0.445`.
+3. Build and reinstall the app.
+4. Check the launcher again.
+
+If it still clips a little:
+
+1. keep the design unchanged
+2. reduce the foreground artwork one more tiny step
+3. change monochrome scale to `0.44`
+
+Do not change these unless you want a real redesign:
+
+- [design/chordstudio-app-icon.svg](/home/wachin/AndroidStudioProjects/ChordStudioApp/design/chordstudio-app-icon.svg)
+- [app/src/main/res/drawable/ic_launcher_background.xml](/home/wachin/AndroidStudioProjects/ChordStudioApp/app/src/main/res/drawable/ic_launcher_background.xml:1)
+
 ### If the adaptive icon background should change
 
 Edit:
