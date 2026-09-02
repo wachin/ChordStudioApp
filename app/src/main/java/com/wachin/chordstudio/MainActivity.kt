@@ -9,7 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,8 +19,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -27,7 +31,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -36,6 +39,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -43,6 +48,8 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.File
@@ -137,14 +144,18 @@ fun ChordStudioApp(
     var semitoneOffset by remember { mutableStateOf(0) }
     var useSharps by remember { mutableStateOf(true) }
     var showFontSettings by remember { mutableStateOf(false) }
+    var isEditMode by remember { mutableStateOf(false) }
     
     // Font settings state
     var fontSettings by remember { mutableStateOf(FontSettings()) }
     var customFonts by remember { mutableStateOf<List<FontOption>>(emptyList()) }
 
-    val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val contentScrollState = rememberScrollState()
 
     // Load font settings and custom fonts on startup
     LaunchedEffect(Unit) {
@@ -155,6 +166,16 @@ fun ChordStudioApp(
 
     LaunchedEffect(Unit) {
         customFonts = loadCustomFonts(context)
+    }
+
+    LaunchedEffect(isEditMode) {
+        if (isEditMode) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        } else {
+            focusManager.clearFocus(force = true)
+            keyboardController?.hide()
+        }
     }
 
     fun reapplyTranspose() {
@@ -187,18 +208,80 @@ fun ChordStudioApp(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp)
+            .padding(10.dp)
     ) {
-        // Header row with title and settings button
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
         ) {
-            Text(
-                text = "Transpositor de acordes",
-                style = MaterialTheme.typography.headlineSmall
-            )
-            
+            Button(
+                onClick = {
+                    onOpenFile { text ->
+                        originalText = text
+                        semitoneOffset = 0
+                        displayedText = text
+                        isEditMode = false
+                    }
+                },
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    horizontal = 12.dp,
+                    vertical = 6.dp
+                )
+            ) {
+                Text("Abrir")
+            }
+            Button(
+                onClick = { isEditMode = !isEditMode },
+                enabled = originalText.isNotEmpty(),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    horizontal = 12.dp,
+                    vertical = 6.dp
+                )
+            ) {
+                Text(if (isEditMode) "Listo" else "Editar")
+            }
+            Button(
+                onClick = {
+                    semitoneOffset -= 1
+                    reapplyTranspose()
+                },
+                enabled = originalText.isNotEmpty(),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    horizontal = 12.dp,
+                    vertical = 6.dp
+                )
+            ) {
+                Text("-1")
+            }
+            Button(
+                onClick = {
+                    semitoneOffset += 1
+                    reapplyTranspose()
+                },
+                enabled = originalText.isNotEmpty(),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    horizontal = 12.dp,
+                    vertical = 6.dp
+                )
+            ) {
+                Text("+1")
+            }
+            TextButton(
+                onClick = {
+                    semitoneOffset = 0
+                    displayedText = originalText
+                },
+                enabled = originalText.isNotEmpty(),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    horizontal = 8.dp,
+                    vertical = 6.dp
+                )
+            ) {
+                Text("0")
+            }
             IconButton(onClick = { showFontSettings = true }) {
                 Icon(
                     imageVector = Icons.Default.Settings,
@@ -207,118 +290,85 @@ fun ChordStudioApp(
             }
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Button(
-                onClick = {
-                    onOpenFile { text ->
-                        originalText = text
-                        semitoneOffset = 0
-                        displayedText = text
-                    }
-                }
-            ) {
-                Text("Abrir TXT")
-            }
-
-            Button(
-                onClick = {
-                    semitoneOffset -= 1
-                    reapplyTranspose()
-                },
-                enabled = originalText.isNotEmpty()
-            ) {
-                Text("-1")
-            }
-
-            Button(
-                onClick = {
-                    semitoneOffset += 1
-                    reapplyTranspose()
-                },
-                enabled = originalText.isNotEmpty()
-            ) {
-                Text("+1")
-            }
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Text("Semitonos: $semitoneOffset")
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Row {
-                RadioButton(
-                    selected = useSharps,
+            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                TextButton(
                     onClick = {
                         useSharps = true
                         if (originalText.isNotEmpty()) reapplyTranspose()
-                    }
-                )
-                Text(
-                    text = "Sostenidos (#)",
-                    modifier = Modifier.padding(top = 12.dp)
-                )
-            }
-
-            Row {
-                RadioButton(
-                    selected = !useSharps,
+                    },
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                        horizontal = 8.dp,
+                        vertical = 2.dp
+                    )
+                ) {
+                    Text(if (useSharps) "[#]" else "#")
+                }
+                TextButton(
                     onClick = {
                         useSharps = false
                         if (originalText.isNotEmpty()) reapplyTranspose()
-                    }
-                )
-                Text(
-                    text = "Bemoles (b)",
-                    modifier = Modifier.padding(top = 12.dp)
-                )
+                    },
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                        horizontal = 8.dp,
+                        vertical = 2.dp
+                    )
+                ) {
+                    Text(if (!useSharps) "[b]" else "b")
+                }
             }
+            Text(
+                text = "Semitonos: $semitoneOffset",
+                style = MaterialTheme.typography.bodySmall
+            )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
-        TextButton(
-            onClick = {
-                semitoneOffset = 0
-                displayedText = originalText
-            },
-            enabled = originalText.isNotEmpty()
-        ) {
-            Text("Restaurar original")
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        BasicTextField(
-            value = displayedText,
-            onValueChange = { newValue ->
-                displayedText = newValue
-                originalText = newValue
-            },
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
+                .fillMaxWidth()
+                .weight(1f)
                 .background(MaterialTheme.colorScheme.surface)
-                .padding(12.dp),
-            textStyle = TextStyle(
+                .padding(12.dp)
+        ) {
+            val textStyle = TextStyle(
                 color = MaterialTheme.colorScheme.onSurface,
                 fontSize = fontSettings.fontSize,
                 fontFamily = currentFontFamily,
                 fontWeight = fontSettings.fontWeight,
                 fontStyle = fontSettings.fontStyle,
                 lineHeight = (fontSettings.fontSize.value * 1.4).sp
-            ),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
-        )
+            )
+            if (isEditMode) {
+                BasicTextField(
+                    value = displayedText,
+                    onValueChange = { newValue ->
+                        displayedText = newValue
+                        originalText = newValue
+                        semitoneOffset = 0
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .focusRequester(focusRequester)
+                        .verticalScroll(contentScrollState),
+                    textStyle = textStyle,
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
+                )
+            } else {
+                BasicText(
+                    text = displayedText,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(contentScrollState),
+                    style = textStyle
+                )
+            }
+        }
     }
 
     // Font Settings Dialog

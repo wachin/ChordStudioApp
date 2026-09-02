@@ -17,8 +17,15 @@ The app is built with Kotlin, Jetpack Compose, and Gradle in Android Studio.
 To build this project, you need:
 
 - Android Studio
-- The Android SDK configured by Android Studio
+- JDK 17 (Android Studio's bundled JDK is recommended)
+- Android SDK with Android API 34 installed
+- Android SDK Build-Tools installed through Android Studio
 - Internet access the first time Gradle downloads dependencies
+
+The repository includes the Gradle Wrapper, so no system Gradle installation is
+required. Do not commit `local.properties`: it contains a machine-specific SDK
+path. Use [`local.properties.example`](./local.properties.example) as a template
+when a local SDK path must be configured manually.
 
 ## Get The Project
 
@@ -42,6 +49,18 @@ git clone <repository-url>
 4. Wait for Gradle sync to finish.
 
 If Android Studio asks to trust the project or configure the SDK, accept those steps first.
+In `Settings > Languages & Frameworks > Android SDK`, install Android API 34
+and the matching SDK Build-Tools if they are not already available.
+
+If Android Studio cannot find the SDK, either configure its SDK location in the
+IDE or create `local.properties` in the project root:
+
+```text
+sdk.dir=/absolute/path/to/Android/Sdk
+```
+
+For example, a typical Linux installation uses
+`/home/<user>/Android/Sdk`; Windows and macOS use different paths.
 
 ## Build The APK
 
@@ -51,6 +70,20 @@ After Gradle sync completes:
 2. Click `Assemble Project`.
 
 Android Studio will build the debug APK.
+
+The same build can be run from a terminal:
+
+```bash
+./gradlew assembleDebug
+```
+
+On Windows, use `gradlew.bat assembleDebug`.
+
+Run the local unit tests with:
+
+```bash
+./gradlew testDebugUnitTest
+```
 
 ## APK Output Location
 
@@ -75,6 +108,19 @@ Important locations:
 - `app/src/main/res/` : Android resources
 - `design/` : editable design assets such as the SVG app icon
 - `docs/` : project documentation
+
+## Development Handoff
+
+The current UI work is implemented in
+[`MainActivity.kt`](./app/src/main/java/com/wachin/chordstudio/MainActivity.kt).
+It includes separate reading/editing modes, focus and keyboard control,
+independent content scrolling, and a compact controls bar.
+
+The next planned work is documented in
+[`ROADMAP.md`](./ROADMAP.md). Before making changes, check the working tree and
+run the unit tests. If the build fails with an SDK-location error, configure
+`local.properties` as described above; that file is intentionally ignored by
+Git.
 
 ## Icon Notes
 
