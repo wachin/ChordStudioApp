@@ -329,13 +329,11 @@ Cuando retomes el proyecto después del formateo:
 2. revisar este archivo
 3. abrir `MainActivity.kt`
 4. localizar `ChordStudioApp(...)`
-5. implementar `isEditMode`
-6. separar `Text`/`BasicText` de `BasicTextField`
-7. agregar control explícito de foco y teclado
-8. reorganizar la barra de controles para usar menos alto
-9. probar en celular real
-10. verificar que el teclado no aparezca fuera de modo edición
-11. verificar que el scroll siga funcionando bien
+5. revisar la implementación existente de `isEditMode`
+6. probar en celular real
+7. verificar que el teclado no aparezca fuera de modo edición
+8. verificar que el scroll siga funcionando bien
+9. continuar con la separación entre texto fuente y texto mostrado
 
 ## Criterios de aceptación
 
@@ -347,6 +345,18 @@ El trabajo se puede considerar bien resuelto cuando:
 - al salir de edición, el teclado desaparece
 - los controles ocupan menos espacio vertical que ahora
 - la zona de texto visible en celular es claramente mayor
+
+## Estado de la implementación
+
+Las fases 1 a 4 ya están implementadas en `MainActivity.kt`:
+
+- lectura y edición usan representaciones separadas
+- el foco y el teclado se controlan al entrar y salir de edición
+- el scroll está limitado al área de contenido
+- la barra superior y el selector de alteraciones son compactos
+
+La compilación local debe ejecutarse en un equipo con Android SDK API 34.
+Consulta `README.md` y `local.properties.example` para configurar el entorno.
 
 ## Archivos más probables a modificar
 
