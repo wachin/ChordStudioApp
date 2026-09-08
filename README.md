@@ -229,6 +229,36 @@ cat local.properties
 #   sdk.dir=/home/<your-user>/Android/Sdk
 ```
 
+### 4.1 Optional: environment variables (`ANDROID_HOME` and `PATH`)
+
+Besides (or instead of) `local.properties`, you can tell your whole system where the
+SDK is by adding this to the end of `~/.bashrc`:
+
+```bash
+export ANDROID_HOME="$HOME/Android/Sdk"
+export PATH="$PATH:$ANDROID_HOME/platform-tools"
+export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin"
+```
+
+What each line does:
+
+- `ANDROID_HOME` — the standard variable that many Android tools read to find the SDK
+  (if `local.properties` exists, it takes precedence)
+- `platform-tools` in `PATH` — lets you run `adb` from any terminal
+- `cmdline-tools/latest/bin` — lets you run `sdkmanager` and `avdmanager` from any
+  terminal. It only takes effect after installing **Android SDK Command-line Tools
+  (latest)** in the SDK Manager (**Settings → Languages & Frameworks → Android SDK →
+  SDK Tools tab**); if it is not installed, the line is simply ignored until then.
+
+Apply the changes and verify:
+
+```bash
+source ~/.bashrc
+
+echo $ANDROID_HOME   # /home/<your-user>/Android/Sdk
+adb version          # works from any folder
+```
+
 ---
 
 ## 5. Build the app
@@ -418,6 +448,7 @@ After following all the steps, this is what a working environment looks like:
 | **Platform-tools (adb)** | `adb version` | `Android Debug Bridge version 1.0.x` |
 | **Licenses accepted** | `ls ~/Android/Sdk/licenses` | `android-sdk-license` (and/or others) present |
 | **local.properties** | `cat local.properties` | `sdk.dir=/home/<your-user>/Android/Sdk` |
+| **ANDROID_HOME** (optional) | `echo $ANDROID_HOME` | `/home/<your-user>/Android/Sdk` |
 | **KVM** (emulator only) | `ls /dev/kvm` and `groups` | `/dev/kvm` exists and `groups` includes `kvm` |
 | **The project builds** | `./gradlew assembleDebug` | `BUILD SUCCESSFUL` |
 | **Tests pass** | `./gradlew testDebugUnitTest` | `BUILD SUCCESSFUL` |
