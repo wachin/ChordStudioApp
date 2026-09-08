@@ -374,6 +374,11 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 The **ChordStudioApp** icon will appear on the phone. Alternatively, press
 **Run ▶** in Android Studio and choose your phone as the target device.
 
+> **Note:** the **Run ▶** button is only active after a successful Gradle sync.
+> If it appears grayed out/disabled, run **File → Sync Project with Gradle Files**
+> and wait for it to finish — then the button turns green and the app installs
+> on the connected phone.
+
 > **Tip:** The app opens plain-text chord sheets from the phone (the "Open"
 > button), so to try it, download or create a `.txt` file with lyrics and chords
 > on the phone.
@@ -497,6 +502,7 @@ After following all the steps, this is what a working environment looks like:
 
 | Problem | Solution |
 |---|---|
+| **Run ▶ button is grayed out in Android Studio** | Run **File → Sync Project with Gradle Files** and wait for it to finish. Without a successful sync the IDE has no `app` run configuration, so Run stays disabled. Also check `app` is selected in the dropdown next to the button |
 | Build fails with "SDK location not found" | Create `local.properties` with `sdk.dir=/home/<your-user>/Android/Sdk` (section 4) |
 | Build fails asking to accept licenses | Accept the licenses in the SDK Manager (section 3) or run `sdkmanager --licenses` |
 | `adb devices` shows `unauthorized` | Accept the USB debugging prompt on the phone and run `adb devices` again |
