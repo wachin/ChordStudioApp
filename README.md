@@ -521,7 +521,11 @@ Important locations:
 The current UI work is implemented in
 [`MainActivity.kt`](./app/src/main/java/com/wachin/chordstudio/MainActivity.kt).
 It includes separate reading/editing modes, focus and keyboard control,
-independent content scrolling, and a compact controls bar.
+independent content scrolling, a compact controls bar, and a clean separation
+between text states: `loadedText` (the originally opened file, kept for the
+"Restaurar original" action), `sourceText` (the current transposition base,
+updated by manual edits), `displayedText` (the rendered text), and
+`hasManualEdits` (shows the restore action).
 
 The next planned work is documented in
 [`ROADMAP.md`](./ROADMAP.md). Before making changes, check the working tree and

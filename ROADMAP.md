@@ -7,8 +7,9 @@ Fecha de referencia: 27 de julio de 2026.
 > **Actualización (8 de septiembre de 2026):** el entorno fue restaurado después del formateo y el
 > proyecto vuelve a compilar (`BUILD SUCCESSFUL`) con Gradle 9.5, AGP 9.3.2, Kotlin 2.2.10
 > (built-in Kotlin de AGP 9), Compose BOM 2026.06.01 y `compileSdk = 36`.
-> La guía completa de instalación quedó en `README.md`. Lo único pendiente de desarrollo es la **Fase 5**
-> y la verificación en celular real.
+> La guía completa de instalación quedó en `README.md`. La **Fase 5** ya está implementada
+> (septiembre de 2026); lo único pendiente es la **verificación en celular real**
+> (checklist y criterios de aceptación de abajo).
 
 > ### ⏳ Nota sobre versiones (importante si el proyecto queda inactivo unos meses)
 >
@@ -298,7 +299,12 @@ Opciones mejores:
 
 ## Fase 5: proteger la lógica entre texto original y texto editado
 
-- [ ] **Pendiente — es el siguiente trabajo a realizar**
+- [x] **Implementada** (septiembre de 2026). Estado separado en `ChordStudioApp`:
+  - [x] `loadedText` — el archivo cargado originalmente (inmutable, para "Restaurar original")
+  - [x] `sourceText` — la base actual para la transposición (se actualiza con ediciones manuales)
+  - [x] `displayedText` — el texto visible/renderizado
+  - [x] `hasManualEdits` — se activa al editar; muestra el botón "Restaurar original"
+  - Nota: la verificación en el celular sigue pendiente
 
 ### Problema actual
 
@@ -341,7 +347,7 @@ Orden recomendado de trabajo:
 3. [x] controlar foco/teclado
 4. [x] compactar controles
 5. [x] mover el contenido a un área con `weight(1f)`
-6. [ ] revisar luego la separación entre texto fuente y texto mostrado (Fase 5)
+6. [x] revisar luego la separación entre texto fuente y texto mostrado (Fase 5)
 
 ## Boceto de UX recomendado
 
@@ -376,7 +382,7 @@ Cuando retomes el proyecto después del formateo:
 6. [ ] probar en celular real
 7. [ ] verificar que el teclado no aparezca fuera de modo edición
 8. [ ] verificar que el scroll siga funcionando bien
-9. [ ] continuar con la separación entre texto fuente y texto mostrado (Fase 5)
+9. [x] continuar con la separación entre texto fuente y texto mostrado (Fase 5)
 
 ## Criterios de aceptación
 
@@ -396,7 +402,8 @@ El trabajo se puede considerar bien resuelto cuando (ya está hecho en código; 
   - el foco y el teclado se controlan al entrar y salir de edición
   - el scroll está limitado al área de contenido
   - la barra superior y el selector de alteraciones son compactos
-- [ ] La Fase 5 (separar `sourceText` / `displayedText` / `hasManualEdits`) está pendiente
+- [x] La Fase 5 (separar `loadedText` / `sourceText` / `displayedText` / `hasManualEdits`)
+  está implementada, con botón "Restaurar original" visible cuando hay ediciones manuales
 
 La compilación local debe ejecutarse en un equipo con Android SDK API 36 (`compileSdk = 36`).
 Consulta `README.md` y `local.properties.example` para configurar el entorno.

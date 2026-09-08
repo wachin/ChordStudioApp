@@ -138,8 +138,10 @@ fun ChordStudioApp(
     onOpenFile: ((String) -> Unit) -> Unit,
     onAddCustomFont: (Uri) -> String?
 ) {
-    var originalText by remember { mutableStateOf("") }
+    var loadedText by remember { mutableStateOf("") }
+    var sourceText by remember { mutableStateOf("") }
     var displayedText by remember { mutableStateOf("") }
+    var hasManualEdits by remember { mutableStateOf(false) }
     var semitoneOffset by remember { mutableStateOf(0) }
     var useSharps by remember { mutableStateOf(true) }
     var showFontSettings by remember { mutableStateOf(false) }
@@ -177,9 +179,12 @@ fun ChordStudioApp(
         }
     }
 
+    /**
+     * Recomputes displayedText from sourceText (the current transposition base).
+     */
     fun reapplyTranspose() {
         displayedText = ChordStudio.transposeText(
-            originalText,
+            sourceText,
             semitoneOffset,
             useSharps
         )
@@ -219,9 +224,11 @@ fun ChordStudioApp(
             Button(
                 onClick = {
                     onOpenFile { text ->
-                        originalText = text
-                        semitoneOffset = 0
+                        loadedText = text
+                        sourceText = text
                         displayedText = text
+                        hasManualEdits = false
+                        semitoneOffset = 0
                         isEditMode = false
                     }
                 },
@@ -234,7 +241,7 @@ fun ChordStudioApp(
             }
             Button(
                 onClick = { isEditMode = !isEditMode },
-                enabled = originalText.isNotEmpty(),
+                enabled = displayedText.isNotEmpty(),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(
                     horizontal = 12.dp,
                     vertical = 6.dp
@@ -247,7 +254,7 @@ fun ChordStudioApp(
                     semitoneOffset -= 1
                     reapplyTranspose()
                 },
-                enabled = originalText.isNotEmpty(),
+                enabled = displayedText.isNotEmpty(),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(
                     horizontal = 12.dp,
                     vertical = 6.dp
@@ -260,7 +267,7 @@ fun ChordStudioApp(
                     semitoneOffset += 1
                     reapplyTranspose()
                 },
-                enabled = originalText.isNotEmpty(),
+                enabled = displayedText.isNotEmpty(),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(
                     horizontal = 12.dp,
                     vertical = 6.dp
@@ -271,9 +278,9 @@ fun ChordStudioApp(
             TextButton(
                 onClick = {
                     semitoneOffset = 0
-                    displayedText = originalText
+                    reapplyTranspose()
                 },
-                enabled = originalText.isNotEmpty(),
+                enabled = displayedText.isNotEmpty(),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(
                     horizontal = 8.dp,
                     vertical = 6.dp
@@ -289,6 +296,28 @@ fun ChordStudioApp(
             }
         }
 
+        if (hasManualEdits && loadedText.isNotEmpty()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                TextButton(
+                    onClick = {
+                        sourceText = loadedText
+                        hasManualEdits = false
+                        semitoneOffset = 0
+                        reapplyTranspose()
+                    },
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                        horizontal = 8.dp,
+                        vertical = 2.dp
+                    )
+                ) {
+                    Text("Restaurar original")
+                }
+            }
+        }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
@@ -298,7 +327,7 @@ fun ChordStudioApp(
                 TextButton(
                     onClick = {
                         useSharps = true
-                        if (originalText.isNotEmpty()) reapplyTranspose()
+                        if (displayedText.isNotEmpty()) reapplyTranspose()
                     },
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(
                         horizontal = 8.dp,
@@ -310,7 +339,7 @@ fun ChordStudioApp(
                 TextButton(
                     onClick = {
                         useSharps = false
-                        if (originalText.isNotEmpty()) reapplyTranspose()
+                        if (displayedText.isNotEmpty()) reapplyTranspose()
                     },
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(
                         horizontal = 8.dp,
@@ -347,8 +376,13 @@ fun ChordStudioApp(
                 BasicTextField(
                     value = displayedText,
                     onValueChange = { newValue ->
+                        // Manual edits: the edited text becomes the new transposition base,
+                        // but the originally loaded file is kept in loadedText for restoring.
+                        if (newValue != sourceText) {
+                            hasManualEdits = true
+                        }
+                        sourceText = newValue
                         displayedText = newValue
-                        originalText = newValue
                         semitoneOffset = 0
                     },
                     modifier = Modifier
