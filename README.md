@@ -56,13 +56,49 @@ This guide targets **Debian, Ubuntu, MX Linux and any other Debian-based distrib
 
 ### Debian packages you may need (`apt`)
 
+One-line installs (copy and paste):
+
+Without the emulator (enough to build the app and test on a real phone):
+
+```bash
+sudo apt install git openjdk-21-jdk usbutils curl wget unzip
+```
+
+With the emulator (adds the KVM virtualization stack; only for capable computers):
+
+```bash
+sudo apt install git openjdk-21-jdk usbutils curl wget unzip cpu-checker qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+```
+
+> - If `openjdk-21-jdk` is not available in your distro version, `openjdk-17-jdk`
+>   also works (JDK 17 or newer is required).
+
+Details:
+
 | Package | Needed for | When |
 |---|---|---|
+| `git` | Cloning the repository, committing and pushing changes | **Required** |
 | `openjdk-21-jdk` | Java 21 (alternative to Android Studio's bundled JDK) | Only if you don't use Android Studio's bundled JDK |
-| `cpu-checker`, `qemu-kvm`, `libvirt-daemon-system`, `libvirt-clients`, `bridge-utils` | KVM virtualization for the emulator | Only if you plan to use the emulator (optional) |
+| `usbutils` | Provides `lsusb`, to check the phone is detected at USB level when `adb devices` shows nothing | Recommended (for USB troubleshooting) |
+| `cpu-checker` | The `kvm-ok` diagnostic command | Only if you plan to use the emulator (optional) |
+| `qemu-kvm`, `libvirt-daemon-system`, `libvirt-clients`, `bridge-utils` | KVM virtualization stack for the emulator | Only if you plan to use the emulator (optional) |
+| `curl`, `wget`, `unzip` | Downloading/extracting files from the terminal (e.g. the Android Studio tarball) | Optional convenience |
 
-Everything else (Gradle, the Android SDK components) is handled by the project's
-**Gradle Wrapper** and by **Android Studio**, so you don't install them by hand.
+Notes for people coming from other tools:
+
+- You do **not** need the Debian packages `adb` or `fastboot`: the `adb` you use comes
+  from the SDK's **Platform-Tools** (`~/Android/Sdk/platform-tools`), which is kept in
+  sync with the rest of the SDK. Mixing a system `adb` with the SDK one can cause
+  version mismatches.
+- If you ever installed `apktool` (an APK reverse-engineering tool), Debian pulled in
+  several packages named like `android-framework-res`, `aapt`, `android-lib*` and
+  `libsmali-java`. Those belong to apktool and have **nothing to do** with developing
+  this app — they are not dependencies and you don't need to install anything from them.
+- Gradle itself is **not** installed as a package: the project's Gradle Wrapper
+  (`./gradlew`) downloads and manages its own Gradle.
+- `udev` (USB device management) is already installed by default on any
+  Debian-based desktop; no action needed for the phone to appear in `adb devices`
+  beyond enabling USB debugging on the phone.
 
 ---
 
@@ -325,8 +361,9 @@ and no emulator.
    ```
 
    > If it shows `unauthorized`, accept the prompt on the phone and run
-   > `adb devices` again. If nothing appears, try another cable/USB port and
-   > make sure USB debugging is enabled.
+   > `adb devices` again. If nothing appears, enable USB debugging, try another
+   > cable/USB port, and confirm the phone shows up at USB level with
+   > `lsusb` (from the `usbutils` package).
 
 ### 6.3 Install the app
 
@@ -463,7 +500,7 @@ After following all the steps, this is what a working environment looks like:
 | Build fails with "SDK location not found" | Create `local.properties` with `sdk.dir=/home/<your-user>/Android/Sdk` (section 4) |
 | Build fails asking to accept licenses | Accept the licenses in the SDK Manager (section 3) or run `sdkmanager --licenses` |
 | `adb devices` shows `unauthorized` | Accept the USB debugging prompt on the phone and run `adb devices` again |
-| `adb devices` shows nothing | Enable USB debugging, try another cable/USB port |
+| `adb devices` shows nothing | Enable USB debugging, try another cable/USB port; verify the phone is detected with `lsusb` |
 | Build is slow / out of memory | The project already sets `org.gradle.jvmargs=-Xmx2048m` in `gradle.properties`; close other programs while building |
 | Emulator is extremely slow | Your computer likely lacks RAM/CPU for the emulator; use a real device (section 6) |
 
