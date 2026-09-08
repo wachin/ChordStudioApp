@@ -1,12 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.wachin.chordstudio"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.wachin.chordstudio"
@@ -31,11 +30,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    
-    kotlinOptions {
-        jvmTarget = "11"
-    }
-    
+
     buildFeatures {
         compose = true
     }
@@ -54,6 +49,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.datastore.preferences)
     
     // Debug

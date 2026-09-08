@@ -17,8 +17,8 @@ The app is built with Kotlin, Jetpack Compose, and Gradle in Android Studio.
 To build this project, you need:
 
 - Android Studio
-- JDK 17 (Android Studio's bundled JDK is recommended)
-- Android SDK with Android API 34 installed
+- JDK 17 or newer (Android Studio's bundled JDK, currently 21, is recommended)
+- Android SDK with Android API 36 installed (the project's `compileSdk`)
 - Android SDK Build-Tools installed through Android Studio
 - Internet access the first time Gradle downloads dependencies
 
@@ -49,7 +49,7 @@ git clone <repository-url>
 4. Wait for Gradle sync to finish.
 
 If Android Studio asks to trust the project or configure the SDK, accept those steps first.
-In `Settings > Languages & Frameworks > Android SDK`, install Android API 34
+In `Settings > Languages & Frameworks > Android SDK`, install Android API 36
 and the matching SDK Build-Tools if they are not already available.
 
 If Android Studio cannot find the SDK, either configure its SDK location in the
