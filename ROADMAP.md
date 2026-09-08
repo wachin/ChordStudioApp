@@ -4,16 +4,45 @@ Documento de continuidad para retomar `ChordStudioApp` después de formatear el 
 
 Fecha de referencia: 27 de julio de 2026.
 
+> **Actualización (8 de septiembre de 2026):** el entorno fue restaurado después del formateo y el
+> proyecto vuelve a compilar (`BUILD SUCCESSFUL`) con Gradle 9.5, AGP 9.3.2, Kotlin 2.2.10
+> (built-in Kotlin de AGP 9), Compose BOM 2026.06.01 y `compileSdk = 36`.
+> La guía completa de instalación quedó en `README.md`. Lo único pendiente de desarrollo es la **Fase 5**
+> y la verificación en celular real.
+
+> ### ⏳ Nota sobre versiones (importante si el proyecto queda inactivo unos meses)
+>
+> Las versiones mencionadas arriba (SDK 36, Gradle 9.5, AGP 9.3.2, Kotlin 2.2.10,
+> Compose BOM 2026.06.01) son las verificadas en septiembre de 2026. **Android actualiza
+> estas versiones constantemente**: cada año salen nuevas plataformas (compileSdk/targetSdk),
+> nuevas versiones de AGP, de Kotlin, del Compose BOM y de las librerías androidx.
+>
+> Si retomas el proyecto tiempo después y algo falla o aparece desactualizado, no es un error
+> del proyecto: simplemente hay que subir las versiones. Dónde mirar:
+>
+> - **Android Studio** avisa de actualizaciones y ofrece el **AGP Upgrade Assistant**
+>   (menú `Tools → AGP Upgrade Assistant`) para migrar el proyecto automáticamente.
+> - El **Compose BOM vigente** se consulta en:
+>   <https://developer.android.com/develop/ui/compose/bom/bom-mapping>
+> - Las versiones del proyecto están **centralizadas en `gradle/libs.versions.toml`**:
+>   actualizar ahí (no en los archivos build) y ajustar `compileSdk` en `app/build.gradle.kts`
+>   si la plataforma cambia.
+> - Después de actualizar, verificar siempre con:
+>   `./gradlew assembleDebug` y `./gradlew testDebugUnitTest`.
+>
+> Lo mismo aplica al `README.md`: sus versiones son una foto del momento en que se escribió;
+> el paso a paso sigue siendo válido aunque los números cambien.
+
 ## Objetivo inmediato
 
 La app ya funciona como transpositor de acordes, pero la UI todavía necesita mejoras importantes para usarse bien en celular.
 
 Lo prioritario es:
 
-1. mejorar el scroll del contenido
-2. agregar un modo editor que sólo se active con un botón
-3. evitar que el teclado aparezca mientras no se esté editando
-4. liberar espacio vertical, porque los controles actuales ocupan demasiado
+1. [x] mejorar el scroll del contenido
+2. [x] agregar un modo editor que sólo se active con un botón
+3. [x] evitar que el teclado aparezca mientras no se esté editando
+4. [x] liberar espacio vertical, porque los controles actuales ocupan demasiado
 
 ## Estado actual del proyecto
 
@@ -105,6 +134,8 @@ Comportamiento:
 
 ## Fase 1: separar lectura y edición
 
+- [x] **Implementada** en `MainActivity.kt` (lectura y edición usan representaciones separadas)
+
 ### Meta
 
 Evitar que el teclado aparezca mientras el usuario sólo está leyendo o transponiendo.
@@ -132,6 +163,8 @@ Usar dos representaciones distintas del contenido:
 - en edición: editable de verdad
 
 ## Fase 2: controlar foco y teclado correctamente
+
+- [x] **Implementada** (`FocusRequester`, `LocalFocusManager`, `LocalSoftwareKeyboardController`)
 
 ### Meta
 
@@ -165,6 +198,8 @@ No conviene dejar el `BasicTextField` montado permanentemente con `readOnly = tr
 
 ## Fase 3: mejorar el scroll
 
+- [x] **Implementada** (el scroll vive en el contenido, no en el layout completo)
+
 ### Meta
 
 Que el texto se pueda recorrer cómodamente en pantalla pequeña, sin mezclar el scroll del contenido con el de los controles.
@@ -195,6 +230,12 @@ Opción simple y suficiente para este proyecto:
 - que los controles se desplacen junto con el texto principal
 
 ## Fase 4: compactar la barra de controles
+
+- [x] **Implementada**:
+  - [x] barra compacta de controles
+  - [x] espaciados reducidos
+  - [x] título reducido
+  - [x] selector compacto de `# / b` (en lugar de radio buttons)
 
 ### Meta
 
@@ -257,6 +298,8 @@ Opciones mejores:
 
 ## Fase 5: proteger la lógica entre texto original y texto editado
 
+- [ ] **Pendiente — es el siguiente trabajo a realizar**
+
 ### Problema actual
 
 Hoy, en `onValueChange`, se hace:
@@ -293,12 +336,12 @@ No es obligatorio hacerlo primero, pero sí conviene dejarlo previsto.
 
 Orden recomendado de trabajo:
 
-1. agregar `isEditMode`
-2. separar vista lectura y vista edición
-3. controlar foco/teclado
-4. compactar controles
-5. mover el contenido a un área con `weight(1f)`
-6. revisar luego la separación entre texto fuente y texto mostrado
+1. [x] agregar `isEditMode`
+2. [x] separar vista lectura y vista edición
+3. [x] controlar foco/teclado
+4. [x] compactar controles
+5. [x] mover el contenido a un área con `weight(1f)`
+6. [ ] revisar luego la separación entre texto fuente y texto mostrado (Fase 5)
 
 ## Boceto de UX recomendado
 
@@ -325,38 +368,43 @@ Orden recomendado de trabajo:
 
 Cuando retomes el proyecto después del formateo:
 
-1. clonar o abrir el repo
-2. revisar este archivo
-3. abrir `MainActivity.kt`
-4. localizar `ChordStudioApp(...)`
-5. revisar la implementación existente de `isEditMode`
-6. probar en celular real
-7. verificar que el teclado no aparezca fuera de modo edición
-8. verificar que el scroll siga funcionando bien
-9. continuar con la separación entre texto fuente y texto mostrado
+1. [x] clonar o abrir el repo
+2. [x] revisar este archivo
+3. [x] abrir `MainActivity.kt`
+4. [x] localizar `ChordStudioApp(...)`
+5. [x] revisar la implementación existente de `isEditMode`
+6. [ ] probar en celular real
+7. [ ] verificar que el teclado no aparezca fuera de modo edición
+8. [ ] verificar que el scroll siga funcionando bien
+9. [ ] continuar con la separación entre texto fuente y texto mostrado (Fase 5)
 
 ## Criterios de aceptación
 
-El trabajo se puede considerar bien resuelto cuando:
+El trabajo se puede considerar bien resuelto cuando (ya está hecho en código; marcar cada punto al verificarlo en el celular):
 
-- el teclado no aparece al abrir la app
-- el texto se puede leer y desplazar cómodamente
-- la edición sólo ocurre tras pulsar un botón
-- al salir de edición, el teclado desaparece
-- los controles ocupan menos espacio vertical que ahora
-- la zona de texto visible en celular es claramente mayor
+- [ ] el teclado no aparece al abrir la app
+- [ ] el texto se puede leer y desplazar cómodamente
+- [ ] la edición sólo ocurre tras pulsar un botón
+- [ ] al salir de edición, el teclado desaparece
+- [ ] los controles ocupan menos espacio vertical que ahora
+- [ ] la zona de texto visible en celular es claramente mayor
 
 ## Estado de la implementación
 
-Las fases 1 a 4 ya están implementadas en `MainActivity.kt`:
+- [x] Las fases 1 a 4 ya están implementadas en `MainActivity.kt`:
+  - lectura y edición usan representaciones separadas
+  - el foco y el teclado se controlan al entrar y salir de edición
+  - el scroll está limitado al área de contenido
+  - la barra superior y el selector de alteraciones son compactos
+- [ ] La Fase 5 (separar `sourceText` / `displayedText` / `hasManualEdits`) está pendiente
 
-- lectura y edición usan representaciones separadas
-- el foco y el teclado se controlan al entrar y salir de edición
-- el scroll está limitado al área de contenido
-- la barra superior y el selector de alteraciones son compactos
-
-La compilación local debe ejecutarse en un equipo con Android SDK API 34.
+La compilación local debe ejecutarse en un equipo con Android SDK API 36 (`compileSdk = 36`).
 Consulta `README.md` y `local.properties.example` para configurar el entorno.
+
+El entorno ya fue restaurado y verificado tras el formateo (8 de septiembre de 2026):
+`./gradlew assembleDebug` y `./gradlew testDebugUnitTest` terminan en `BUILD SUCCESSFUL`.
+Lo que sigue es probar la app en el celular (`adb install -r app/build/outputs/apk/debug/app-debug.apk`),
+marcar los criterios de aceptación y luego afrontar la Fase 5.
 
 ## Archivos más probables a modificar
 
@@ -369,8 +417,10 @@ Consulta `README.md` y `local.properties.example` para configurar el entorno.
 
 Antes de formatear, conviene dejar subidos al repositorio también:
 
-- este `ROADMAP.md`
-- cualquier cambio pendiente en `README.md`
-- cualquier cambio pendiente en `docs/`
+- [x] este `ROADMAP.md`
+- [x] cualquier cambio pendiente en `README.md`
+- [x] cualquier cambio pendiente en `docs/`
 
 Si algo queda sin commit y sin push, se va a perder con el formateo.
+
+(Esto ya se cumplió: tras el formateo el repositorio se clonó de nuevo y estos archivos están en Git.)
